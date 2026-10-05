@@ -2,6 +2,15 @@
 
 **A security and governance gateway for LLMs and AI agents, built with Java 21 and Spring Boot 3.**
 
+![CI](https://github.com/geethasrimandalapu/ai-firewall/actions/workflows/ci.yml/badge.svg)
+![Java 21](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot 3](https://img.shields.io/badge/Spring%20Boot-3.4-brightgreen)
+![Tests](https://img.shields.io/badge/tests-22%20passing-success)
+
+![AI Firewall dashboard](docs/dashboard.png)
+
+*The live console: a prompt-injection attack blocked (risk 100/100), customer email and card number redacted before reaching the model, and a $900 agent refund held for human approval.*
+
 Companies want their teams and AI agents to use models like GPT and Claude, but they are afraid of three things:
 
 1. **Data leaks:** employees paste customer data, card numbers and API keys into AI chats.
@@ -130,3 +139,7 @@ src/main/java/com/aifirewall
 ## Limitations
 
 Rule-based detection catches known attack patterns but not every novel one; it is one layer of defense, not a guarantee. Cost figures are estimates based on the configured prices.
+
+## Author
+
+Built by **Geetha Sri Mandalapu**, Computer Science graduate (December 2026).
