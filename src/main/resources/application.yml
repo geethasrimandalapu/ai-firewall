@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: ai-firewall
+  datasource:
+    url: ${DB_URL:jdbc:h2:file:./data/firewall}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+firewall:
+  injection-threshold: 50       # 0-100; requests at or above this risk are blocked
+  redact-pii: true
+  # USD per 1M tokens, used for cost tracking. Set these to your model's real prices.
+  input-cost-per-million: 0.15
+  output-cost-per-million: 0.60
+  upstream:
+    # Any OpenAI-compatible API. Leave LLM_API_KEY empty to run with the built-in mock model.
+    base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+    api-key: ${LLM_API_KEY:}
+    model: ${LLM_MODEL:gpt-4o-mini}
+
+  # Zero-trust tool permissions for AI agents (anything not listed is denied)
+  agents:
+    - agent-id: support-bot
+      allowed-tools:
+        - tool: get_order
+        - tool: issue_refund
+          limits:
+            - argument: amount
+              max: 100
+              when-exceeded: REQUIRE_APPROVAL
+      denied-tools: [delete_customer, export_all_customers]
+    - agent-id: devops-bot
+      allowed-tools:
+        - tool: read_logs
+        - tool: restart_service
+          limits:
+            - argument: replicas
+              max: 5
+              when-exceeded: DENY
+      denied-tools: [drop_database, rotate_root_credentials]
